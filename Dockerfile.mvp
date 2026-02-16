@@ -1,0 +1,46 @@
+# Dockerfile para MVP - Parque Altamiro
+# Build: docker build -f Dockerfile.mvp -t simfire-mvp .
+# Run:   docker run -it --rm -v ~/.simfire:/root/.simfire simfire-mvp
+
+FROM python:3.9-slim
+
+# Dependências do sistema para pygame e geopandas
+RUN apt-get update && apt-get install -y \
+    libsdl2-dev \
+    libsdl2-image-dev \
+    libsdl2-mixer-dev \
+    libsdl2-ttf-dev \
+    libfreetype6-dev \
+    libportmidi-dev \
+    libgeos-dev \
+    libproj-dev \
+    gdal-bin \
+    libgdal-dev \
+    gcc \
+    g++ \
+    libcairo2-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Atualiza pip
+RUN pip install --upgrade pip wheel setuptools
+
+# Copia requirements primeiro (cache)
+COPY scripts/requirements_mvp.txt ./requirements.txt
+
+# Instala dependências via pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copia o código fonte
+COPY . .
+
+# Instala o pacote simfire em modo editável
+RUN pip install -e . --no-deps
+
+# Diretório de saída
+RUN mkdir -p /root/.simfire/parque_altamiro
+
+# Comando padrão (modo headless para Docker)
+CMD ["python", "scripts/run_mvp_parque_altamiro.py", "--mode", "headless"]

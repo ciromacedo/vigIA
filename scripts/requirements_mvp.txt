@@ -1,0 +1,46 @@
+# Dependências para o MVP - SimFire
+# Instalar com: pip install -r scripts/requirements_mvp.txt
+
+# Core
+setuptools>=65.0.0,<71.0.0
+numpy>=1.22.4,<2.0.0
+matplotlib>=3.5.2
+Pillow>=9.1.1,<11.0.0
+PyYAML>=6.0
+scipy>=1.9.0
+
+# Simulação
+pygame>=2.1.2
+noise>=1.2.2
+
+# Processamento de imagem/vídeo
+opencv-python>=4.7.0.72
+scikit-image>=0.19.3
+imagecodecs>=2023.7.10
+
+# Dados
+h5py>=3.7.0
+jsonlines>=3.1.0
+
+# UI/Logs
+rich>=12.5.1
+wurlitzer>=3.0.2
+
+# PDF/SVG (para exportação)
+reportlab>=3.6.10
+svglib>=1.3.0
+
+# Geospatial (necessário mesmo para modo functional)
+geotiff>=0.2.10
+geopandas>=0.14.4
+geopy>=2.4.1
+pyproj>=3.4.0
+shapely>=2.0.0
+fiona>=1.9.0
+
+# LandFire (necessário para imports)
+landfire>=0.5.0
+
+# Visualização em mapas
+folium>=0.14.0
+branca>=0.6.0

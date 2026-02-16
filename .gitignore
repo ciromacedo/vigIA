@@ -19,3 +19,8 @@ download.py
 coverage.xml
 .mypy_cache
 .pytest_cache
+.venv_mvp/
+scripts/*.html
+scripts/*.geojson
+scripts/*.csv
+scripts/*.png

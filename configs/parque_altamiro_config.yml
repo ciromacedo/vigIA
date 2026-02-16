@@ -1,0 +1,124 @@
+# Configuração MVP - Parque Estadual Altamiro de Moura Pacheco
+# Goiânia, GO, Brasil
+# Coordenada Central: 16°34'16.23"S, 49°10'55.28"W (-16.571175, -49.181467)
+#
+# Este MVP usa dados sintéticos (modo functional) para simular
+# um incêndio florestal no cerrado goiano.
+
+area:
+  # Área aproximada do parque: ~2km x 2km
+  # 2000m / 30m (resolução) = ~67 pixels
+  # Usando 100x100 para ter margem
+  screen_size: [100, 100]  # altura, largura em pixels
+  pixel_scale: 50  # pés por pixel (15.24m)
+
+display:
+  fire_size: 2
+  control_line_size: 2
+  agent_size: 4
+  rescale_factor: 4  # Amplia a visualização 4x
+
+simulation:
+  update_rate: 1  # minutos por frame
+  runtime: 8h  # duração total da simulação
+  headless: false  # true para rodar sem interface gráfica
+  draw_spread_graph: true
+  record: true  # grava GIF da simulação
+  save_data: true
+  data_type: "npy"
+  sf_home: "~/.simfire/parque_altamiro"
+
+mitigation:
+  ros_attenuation: true  # aceiros reduzem velocidade de propagação
+
+# Seção operational não é usada no modo functional,
+# mas mantida para referência das coordenadas reais
+operational:
+  seed: 42
+  latitude: -16.571175  # Centro do parque
+  longitude: -49.181467
+  height: 3000  # metros
+  width: 3000   # metros
+  resolution: 30
+  year: 2024
+
+terrain:
+  topography:
+    type: functional  # Usa geração procedural
+    functional:
+      function: perlin  # Ruído Perlin para simular terreno ondulado
+      perlin:
+        octaves: 4
+        persistence: 0.5
+        lacunarity: 2.0
+        seed: 16571175  # Seed baseado na latitude
+        # Elevação do parque: ~750-850m (~2460-2790 pés)
+        range_min: 2460.0
+        range_max: 2790.0
+      gaussian:
+        amplitude: 100
+        mu_x: 50
+        mu_y: 50
+        sigma_x: 30
+        sigma_y: 30
+  fuel:
+    type: functional
+    functional:
+      # Chaparral é similar ao Cerrado Stricto Sensu
+      # Características: vegetação arbustiva densa, inflamável
+      function: chaparral
+      chaparral:
+        seed: 49181467  # Seed baseado na longitude
+
+fire:
+  fire_initial_position:
+    type: static
+    static:
+      # Posição inicial do fogo (x, y) em pixels
+      # Centro-sul da área simulada
+      position: (50, 70)
+    random:
+      seed: 2024
+  max_fire_duration: 5  # frames que o fogo permanece em cada célula
+  diagonal_spread: true  # permite propagação diagonal
+
+environment:
+  # Umidade do combustível para período seco do cerrado
+  # Agosto-Setembro: umidade muito baixa (2-4%)
+  moisture: 0.025
+
+wind:
+  # Vento simples: típico do período seco em Goiânia
+  # Ventos predominantes de Leste/Nordeste
+  function: simple
+  cfd:
+    time_to_train: 1000
+    result_accuracy: 1
+    iterations: 1
+    scale: 1
+    timestep_dt: 1.0
+    diffusion: 0.0
+    viscosity: 0.0000001
+    speed: 15
+    direction: east
+  simple:
+    # Vento de Leste (90°), ~15 km/h (~9.3 mph)
+    speed: 9
+    direction: 90.0
+  perlin:
+    speed:
+      seed: 2024
+      scale: 400
+      octaves: 3
+      persistence: 0.7
+      lacunarity: 2.0
+      range_min: 5
+      range_max: 15
+    direction:
+      seed: 2025
+      scale: 1500
+      octaves: 2
+      persistence: 0.9
+      lacunarity: 1.0
+      range_min: 45.0   # NE
+      range_max: 135.0  # SE
